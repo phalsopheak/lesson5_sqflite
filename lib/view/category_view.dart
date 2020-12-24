@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lesson_5_sqflite/controller/category_controller.dart';
@@ -35,8 +37,27 @@ class CategoryView extends StatelessWidget {
         cc.keyID = keyId;
         Get.toNamed('/add_category');
       },
-      child: Container(
-        child: Text(categoryName),
+      child: Card(
+        child: Container(
+          margin: EdgeInsets.all(9),
+          child: Row(
+            children: [
+              CircleAvatar(
+                child: Text(categoryName[0]),
+                backgroundColor: Colors.redAccent,
+              ),
+              SizedBox(
+                width: 8,
+              ),
+              Text(
+                categoryName,
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

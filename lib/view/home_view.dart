@@ -16,14 +16,30 @@ class HomeView extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.redAccent,
               ),
-              child: Text('Sqflite Demo'),
+              child: Container(
+                child: Center(
+                  child: Text(
+                    'Sqflite Demo',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
             ),
             SizedBox(
               height: 5,
             ),
             ListTile(
-                title: Text('Category'),
-                leading: Icon(Icons.category),
+                title: Text(
+                  'Category',
+                  style: TextStyle(color: Colors.redAccent),
+                ),
+                leading: Icon(
+                  Icons.category,
+                  color: Colors.redAccent,
+                ),
                 onTap: () {
                   Get.back();
                   Get.toNamed('/category');
