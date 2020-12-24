@@ -15,7 +15,10 @@ class CategoryView extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () => Get.toNamed('/add_category'),
+            onPressed: () {
+              cc.loadAddForm();
+              Get.toNamed('/add_category');
+            },
           )
         ],
       ),
@@ -34,7 +37,7 @@ class CategoryView extends StatelessWidget {
   Widget _buildCategoryRow(int keyId, String categoryName) {
     return GestureDetector(
       onTap: () {
-        cc.keyID = keyId;
+        cc.loadEditForm(keyId);
         Get.toNamed('/add_category');
       },
       child: Card(
@@ -47,13 +50,43 @@ class CategoryView extends StatelessWidget {
                 backgroundColor: Colors.redAccent,
               ),
               SizedBox(
-                width: 8,
+                width: 10,
               ),
-              Text(
-                categoryName,
-                style: TextStyle(
-                  fontSize: 20,
+              Expanded(
+                child: Text(
+                  categoryName,
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
                 ),
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.delete,
+                  color: Colors.redAccent,
+                ),
+                onPressed: () {
+                  Get.defaultDialog(
+                    title: 'Category',
+                    content: Text('Do you want to delete this record?'),
+                    confirm: RaisedButton(
+                      color: Colors.redAccent,
+                      onPressed: () => cc.deleteCategory(keyId),
+                      child: Text(
+                        'Yes',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    cancel: RaisedButton(
+                      color: Colors.redAccent,
+                      onPressed: () => Get.back(),
+                      child: Text(
+                        'No',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  );
+                },
               )
             ],
           ),

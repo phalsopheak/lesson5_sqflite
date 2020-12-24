@@ -25,11 +25,11 @@ class CategoryAddView extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   child: TextFormField(
+                    controller: lc.tecCategoryName,
                     decoration: InputDecoration(
                       labelText: 'Category Name',
                     ),
                     validator: lc.nameValidator,
-                    onSaved: (input) => lc.txtCategoryName = input,
                   ),
                 ),
                 SizedBox(

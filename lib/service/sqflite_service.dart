@@ -35,9 +35,14 @@ class SqfliteService {
     return await db.insert(tableName, data);
   }
 
-  Future<List<Map<String, dynamic>>> read(String tableName) async {
+  Future<List<Map<String, dynamic>>> read(
+      {String tableName, int id = 0}) async {
     Database db = await instance.database;
-    return await db.query(tableName);
+    if (id == 0) {
+      return await db.query(tableName);
+    } else {
+      return await db.query(tableName, where: 'id = ?', whereArgs: [id]);
+    }
   }
 
   Future<int> update(Map<String, dynamic> data, String tableName) async {
