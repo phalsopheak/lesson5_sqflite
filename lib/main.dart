@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lesson_5_sqflite/view/category_add_view.dart';
 import 'package:lesson_5_sqflite/view/category_view.dart';
+import 'package:lesson_5_sqflite/view/product_add_view.dart';
+import 'package:lesson_5_sqflite/view/product_view.dart';
 
 import 'view/home_view.dart';
 
@@ -32,6 +34,14 @@ class MyApp extends StatelessWidget {
           name: '/add_category',
           page: () => CategoryAddView(),
         ),
+        GetPage(
+          name: '/product',
+          page: () => ProductView(),
+        ),
+        GetPage(
+          name: '/add_product',
+          page: () => ProductAddView(),
+        )
       ],
     );
   }

@@ -24,6 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.0
+  flutter_datetime_picker: ^1.4.0
   form_field_validator: ^1.0.1
   get: ^3.24.0
   path_provider: ^1.6.24

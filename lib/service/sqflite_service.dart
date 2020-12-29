@@ -18,7 +18,7 @@ class SqfliteService {
 
   _initDB() async {
     Directory directory = await getApplicationDocumentsDirectory();
-    String path = directory.path + 'mydb2.db';
+    String path = directory.path + 'mydb3.db';
 
     return await openDatabase(path, version: 1, onCreate: _onCreateDB);
   }
@@ -27,6 +27,31 @@ class SqfliteService {
     await db.execute('''
     CREATE TABLE tbl_category (id INTEGER PRIMARY KEY AUTOINCREMENT,
                               category_name TEXT)
+    ''');
+
+    await db.execute('''
+    CREATE TABLE tbl_product (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                              category_id int,
+                              product_code TEXT,
+                              product_name TEXT,
+                              product_price REAL,
+                              product_picture TEXT,
+                              product_description TEXT,
+                              timestamp TEXT)
+    ''');
+
+    await db.execute('''
+    CREATE VIEW v_list_product 
+    AS 
+    SELECT
+	  tbl_product.id,tbl_product.category_id,
+    tbl_product.product_code,tbl_product.product_name,
+    tbl_product.product_price,tbl_product.product_description,
+    tbl_product.product_picture,tbl_product.timestamp,
+    tbl_category.category_name
+    FROM
+	  tbl_product INNER JOIN tbl_category 
+    ON tbl_product.category_id = tbl_category.id
     ''');
   }
 

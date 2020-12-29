@@ -2,10 +2,11 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lesson_5_sqflite/controller/category_controller.dart';
+import 'package:lesson_5_sqflite/controller/product_controller.dart';
+import 'package:lesson_5_sqflite/model/view_model/product_category_model.dart';
 
-class CategoryView extends StatelessWidget {
-  final CategoryController cc = Get.put(CategoryController());
+class ProductView extends StatelessWidget {
+  final ProductController pc = Get.put(ProductController());
 
   @override
   Widget build(BuildContext context) {
@@ -13,8 +14,8 @@ class CategoryView extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.redAccent,
         onPressed: () {
-          cc.loadAddForm();
-          Get.toNamed('/add_category');
+          pc.loadAddForm();
+          Get.toNamed('/add_product');
         },
         child: Icon(
           Icons.add,
@@ -24,14 +25,14 @@ class CategoryView extends StatelessWidget {
         title: Obx(
           () => ListTile(
             title: Text(
-              'Category List',
+              'Product List',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 25,
               ),
             ),
             subtitle: Text(
-              ' ${cc.listCategory.length} record',
+              ' ${pc.listProduct.length} record',
               style: TextStyle(
                 color: Colors.white,
               ),
@@ -41,21 +42,20 @@ class CategoryView extends StatelessWidget {
       ),
       body: Obx(
         () => ListView.builder(
-          itemCount: cc.listCategory.length,
+          itemCount: pc.listProduct.length,
           itemBuilder: (BuildContext context, int index) {
-            return _buildCategoryRow(
-                cc.listCategory[index].id, cc.listCategory[index].categoryName);
+            return _buildCategoryRow(pc.listProduct[index]);
           },
         ),
       ),
     );
   }
 
-  Widget _buildCategoryRow(int keyId, String categoryName) {
+  Widget _buildCategoryRow(ProductCategoryModel pcModel) {
     return GestureDetector(
       onTap: () {
-        cc.loadEditForm(keyId);
-        Get.toNamed('/add_category');
+        pc.loadEditForm(pcModel.id);
+        Get.toNamed('/add_product');
       },
       child: Card(
         child: Container(
@@ -63,18 +63,34 @@ class CategoryView extends StatelessWidget {
           child: Row(
             children: [
               CircleAvatar(
-                child: Text(categoryName[0]),
+                child: Text(pcModel.productName[0]),
                 backgroundColor: Colors.redAccent,
               ),
               SizedBox(
                 width: 10,
               ),
               Expanded(
-                child: Text(
-                  categoryName,
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      pcModel.productName +
+                          ' - ' +
+                          pcModel.productPrice.toString() +
+                          '\$',
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    Text(
+                      pcModel.categoryName,
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                  ],
                 ),
               ),
               IconButton(
@@ -84,11 +100,11 @@ class CategoryView extends StatelessWidget {
                 ),
                 onPressed: () {
                   Get.defaultDialog(
-                    title: 'Category',
+                    title: 'Product',
                     content: Text('Do you want to delete this record?'),
                     confirm: RaisedButton(
                       color: Colors.redAccent,
-                      onPressed: () => cc.deleteCategory(keyId),
+                      onPressed: () => pc.deleteProduct(pcModel.id),
                       child: Text(
                         'Yes',
                         style: TextStyle(color: Colors.white),

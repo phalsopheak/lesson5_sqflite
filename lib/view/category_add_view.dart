@@ -18,13 +18,18 @@ class CategoryAddView extends StatelessWidget {
           child: Form(
             key: lc.formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   child: TextFormField(
+                    autofocus: true,
+                    focusNode: cc.fn,
+                    style: TextStyle(
+                      fontSize: 30,
+                    ),
                     controller: lc.tecCategoryName,
                     decoration: InputDecoration(
                       labelText: 'Category Name',

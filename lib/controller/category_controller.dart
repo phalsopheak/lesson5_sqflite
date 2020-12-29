@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:lesson_5_sqflite/service/sqflite_service.dart';
 
 class CategoryController extends GetxController {
+  // 0= add new , not 0 = edit
   var keyID = 0;
   var listCategory = List<CategoryModel>().obs;
 
   var formKey = GlobalKey<FormState>();
 
   TextEditingController tecCategoryName;
+  FocusNode fn;
 
   var nameValidator = MultiValidator([
     RequiredValidator(errorText: 'category name is required'),
@@ -21,12 +23,14 @@ class CategoryController extends GetxController {
   void onInit() {
     readCategory();
     tecCategoryName = TextEditingController();
+    fn = FocusNode();
     super.onInit();
   }
 
   @override
   onClose() {
     tecCategoryName.dispose();
+    fn.dispose();
     super.onClose();
   }
 
@@ -35,11 +39,15 @@ class CategoryController extends GetxController {
     var list = await SqfliteService.instance
         .read(tableName: 'tbl_category', id: keyId);
     tecCategoryName.text = list[0]['category_name'];
+    fn.requestFocus();
+    tecCategoryName.selection =
+        TextSelection(baseOffset: 0, extentOffset: tecCategoryName.text.length);
   }
 
   loadAddForm() {
     keyID = 0;
     tecCategoryName.text = '';
+    fn.requestFocus();
   }
 
   readCategory() async {
@@ -56,6 +64,7 @@ class CategoryController extends GetxController {
       formKey.currentState.save();
 
       int id = 0;
+      //=0
       if (keyID == 0) {
         var model = CategoryModel(
           categoryName: tecCategoryName.text,
@@ -76,7 +85,7 @@ class CategoryController extends GetxController {
             await SqfliteService.instance.update(model.toMap(), 'tbl_category');
         readCategory();
       }
-      loadAddForm();
+
       Get.back();
     }
   }

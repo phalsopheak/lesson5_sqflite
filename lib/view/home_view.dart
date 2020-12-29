@@ -32,18 +32,33 @@ class HomeView extends StatelessWidget {
               height: 5,
             ),
             ListTile(
-                title: Text(
-                  'Category',
-                  style: TextStyle(color: Colors.redAccent),
-                ),
-                leading: Icon(
-                  Icons.category,
-                  color: Colors.redAccent,
-                ),
-                onTap: () {
-                  Get.back();
-                  Get.toNamed('/category');
-                }),
+              title: Text(
+                'Category',
+                style: TextStyle(color: Colors.redAccent),
+              ),
+              leading: Icon(
+                Icons.category,
+                color: Colors.redAccent,
+              ),
+              onTap: () {
+                Get.back();
+                Get.toNamed('/category');
+              },
+            ),
+            ListTile(
+              title: Text(
+                'Product',
+                style: TextStyle(color: Colors.redAccent),
+              ),
+              leading: Icon(
+                Icons.qr_code,
+                color: Colors.redAccent,
+              ),
+              onTap: () {
+                Get.back();
+                Get.toNamed('/product');
+              },
+            ),
           ],
         ),
       ),
