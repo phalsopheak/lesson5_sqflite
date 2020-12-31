@@ -1,14 +1,19 @@
-import 'dart:math';
+import 'dart:io';
 
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lesson_5_sqflite/model/category_model.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:lesson_5_sqflite/model/product_model.dart';
 import 'package:lesson_5_sqflite/model/view_model/product_category_model.dart';
 import 'package:lesson_5_sqflite/service/sqflite_service.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
+
+enum Galary { galary, camera }
 
 class ProductController extends GetxController {
   // 0= add new , not 0 = edit
@@ -18,6 +23,8 @@ class ProductController extends GetxController {
   var selectedCategory = CategoryModel();
   var picturePath = '';
   var formKey = GlobalKey<FormState>();
+  File productImage;
+  var oldImagePath;
 
   TextEditingController tecProductCode;
   TextEditingController tecProductName;
@@ -30,6 +37,8 @@ class ProductController extends GetxController {
   var nameValidator = MultiValidator([
     RequiredValidator(errorText: 'category name is required'),
   ]);
+
+  //var getValidator = GetUtils.isEmail(tecProductDescription.text ? validate)
 
   @override
   void onInit() {
@@ -63,6 +72,33 @@ class ProductController extends GetxController {
     super.onClose();
   }
 
+  removeGalaryImage() {
+    productImage = null;
+    update();
+  }
+
+  getGalaryImage(Galary galary) async {
+    var picker = ImagePicker();
+    var imageFile;
+    try {
+      if (galary == Galary.galary) {
+        imageFile = await picker.getImage(
+          source: ImageSource.gallery,
+        );
+      } else {
+        imageFile = await picker.getImage(
+          source: ImageSource.camera,
+        );
+      }
+
+      if (imageFile != null) {
+        productImage = File(imageFile.path);
+      }
+    } catch (e) {}
+
+    update();
+  }
+
   showDate(BuildContext context) async {
     DatePicker.showDateTimePicker(context,
         theme: DatePickerTheme(
@@ -94,23 +130,26 @@ class ProductController extends GetxController {
     var list = await SqfliteService.instance
         .read(tableName: 'v_list_product', id: keyId);
 
-    // selectedCategory = CategoryModel(
-    //   id: list[0]['category_id'],
-    //   categoryName: list[0]['category_name'],
-    // );
-
     loadCategory(list[0]['category_id']);
 
     tecProductCode.text = list[0]['product_code'];
     //set focus and select all to field code
-    fn.requestFocus();
-    tecProductCode.selection =
-        TextSelection(baseOffset: 0, extentOffset: tecProductCode.text.length);
+    // fn.requestFocus();
+    // tecProductCode.selection =
+    //     TextSelection(baseOffset: 0, extentOffset: tecProductCode.text.length);
 
     tecProductName.text = list[0]['product_name'];
     tecProductPrice.text = list[0]['product_price'].toString();
     tecProductDescription.text = list[0]['product_description'];
     tecTimestamp.text = list[0]['timestamp'];
+    var strPath = list[0]['product_picture'];
+    if (strPath == null) {
+      productImage = null;
+      oldImagePath = '';
+    } else {
+      productImage = File(strPath);
+      oldImagePath = strPath;
+    }
   }
 
   loadAddForm() {
@@ -121,6 +160,7 @@ class ProductController extends GetxController {
     tecProductPrice.text = '0';
     tecProductDescription.text = '';
     tecTimestamp.text = '';
+    productImage = null;
   }
 
   readCategory() async {
@@ -143,16 +183,22 @@ class ProductController extends GetxController {
   insertProduct() async {
     if (formKey.currentState.validate()) {
       formKey.currentState.save();
-
+      var strPath;
       int id = 0;
       //=0
       if (keyID == 0) {
+        if (productImage != null) {
+          final appDir = await getApplicationDocumentsDirectory();
+          final fileName = path.basename(productImage.path);
+          strPath = '${appDir.path}/image/product/$fileName';
+          final savedImage = await productImage.copy(strPath);
+        }
         var model = ProductModel(
           categoryId: selectedCategory.id,
           productCode: tecProductCode.text,
           productName: tecProductName.text,
           productPrice: double.parse(tecProductPrice.text),
-          productPicture: '',
+          productPicture: productImage != null ? strPath : null,
           productDescription: tecProductDescription.text,
           timestamp: DateTime.parse(tecTimestamp.text),
         );
@@ -166,19 +212,32 @@ class ProductController extends GetxController {
           productCode: tecProductCode.text,
           productName: tecProductName.text,
           productPrice: double.parse(tecProductPrice.text),
-          productPicture: '',
+          productPicture: productImage != null ? strPath : null,
           productDescription: tecProductDescription.text,
           timestamp: DateTime.parse(tecTimestamp.text),
         );
         listProduct.add(cm);
+        //edit mode
       } else {
+        //edit mode delete old photo
+        if (oldImagePath != '') {
+          var oldImage = Directory(oldImagePath);
+          oldImage.delete();
+        }
+        //check if user pick image save t storage and  database
+        if (productImage != null) {
+          final appDir = await getApplicationDocumentsDirectory();
+          final fileName = path.basename(productImage.path);
+          strPath = '${appDir.path}/image/product/$fileName';
+          final savedImage = await productImage.copy(strPath);
+        }
         var model = ProductModel(
           id: keyID,
           categoryId: selectedCategory.id,
           productCode: tecProductCode.text,
           productName: tecProductName.text,
           productPrice: double.parse(tecProductPrice.text),
-          productPicture: '',
+          productPicture: productImage != null ? strPath : null,
           productDescription: tecProductDescription.text,
           timestamp: DateTime.parse(tecTimestamp.text),
         );

@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -62,9 +63,24 @@ class ProductView extends StatelessWidget {
           margin: EdgeInsets.all(9),
           child: Row(
             children: [
-              CircleAvatar(
-                child: Text(pcModel.productName[0]),
-                backgroundColor: Colors.redAccent,
+              Container(
+                child: pcModel.productPicture == null
+                    ? Padding(
+                        padding: const EdgeInsets.only(
+                          left: 5,
+                          right: 3,
+                        ),
+                        child: CircleAvatar(
+                          child: Text(pcModel.productName[0]),
+                          backgroundColor: Colors.redAccent,
+                        ),
+                      )
+                    : Image.file(
+                        File(pcModel.productPicture),
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.fill,
+                      ),
               ),
               SizedBox(
                 width: 10,
@@ -86,8 +102,8 @@ class ProductView extends StatelessWidget {
                     Text(
                       pcModel.categoryName,
                       style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.grey[800],
+                        fontSize: 15,
+                        color: Colors.grey[600],
                       ),
                     ),
                   ],

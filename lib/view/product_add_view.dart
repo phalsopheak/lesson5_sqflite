@@ -89,7 +89,13 @@ class ProductAddView extends StatelessWidget {
                       decoration: InputDecoration(
                         labelText: 'Product Description',
                       ),
-                      validator: pc.nameValidator,
+                      // validator: (value) {
+                      //   if (GetUtils.isEmail(value)) {
+                      //     return null;
+                      //   } else {
+                      //     return 'email is not valid';
+                      //   }
+                      // },
                     ),
                   ),
                   Padding(
@@ -103,6 +109,64 @@ class ProductAddView extends StatelessWidget {
                       ),
                       validator: pc.nameValidator,
                     ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        child: Container(
+                          width: 200,
+                          height: 200,
+                          color: Colors.redAccent,
+                          child: pc.productImage == null
+                              ? Center(
+                                  child: Text(
+                                    'Pick Image',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                )
+                              : Image.file(
+                                  pc.productImage,
+                                  fit: BoxFit.fill,
+                                ),
+                        ),
+                        onTap: () => pc.getGalaryImage(Galary.galary),
+                      ),
+                      Column(
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.image,
+                              color: Colors.redAccent,
+                              size: 50,
+                            ),
+                            onPressed: () => pc.getGalaryImage(Galary.galary),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.camera,
+                              color: Colors.redAccent,
+                              size: 50,
+                            ),
+                            onPressed: () => pc.getGalaryImage(Galary.camera),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.delete,
+                              color: Colors.redAccent,
+                              size: 50,
+                            ),
+                            onPressed: () => pc.removeGalaryImage(),
+                          )
+                        ],
+                      ),
+                    ],
                   ),
                   SizedBox(
                     height: 10,

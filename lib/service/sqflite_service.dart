@@ -18,7 +18,15 @@ class SqfliteService {
 
   _initDB() async {
     Directory directory = await getApplicationDocumentsDirectory();
-    String path = directory.path + 'mydb3.db';
+    String path = directory.path + 'mydb5.db';
+    var imagePath = Directory(directory.path + '/image');
+    var productPath = Directory(directory.path + '/image/product');
+    if (await imagePath.exists() == false) {
+      imagePath.create();
+    }
+    if (await productPath.exists() == false) {
+      productPath.create();
+    }
 
     return await openDatabase(path, version: 1, onCreate: _onCreateDB);
   }
