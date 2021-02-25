@@ -96,3 +96,4 @@ class CategoryController extends GetxController {
     Get.back();
   }
 }
+
